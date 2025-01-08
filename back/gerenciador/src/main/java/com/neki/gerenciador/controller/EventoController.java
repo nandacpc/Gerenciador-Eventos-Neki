@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.neki.gerenciador.dto.EventoCadastroDto;
 import com.neki.gerenciador.dto.EventoDto;
 import com.neki.gerenciador.service.EventoService;
 
@@ -33,7 +35,8 @@ public class EventoController {
 	@Operation(summary = "Retorna todos os eventos.", description = "Exibe uma lista de todos os eventos com as informações gerais.")
 	@ApiResponse(responseCode = "200", description = "Eventos localizados.")
 	public List<EventoDto> listarTodos() {
-		return service.listarTodos();
+		String emailAdmin = SecurityContextHolder.getContext().getAuthentication().getName();
+		return service.listarEventos(emailAdmin);
 	}
 	
 	@PostMapping
@@ -42,7 +45,7 @@ public class EventoController {
 		@ApiResponse(responseCode = "400", description = "Erro ao criar um novo evento."),
 		@ApiResponse(responseCode = "201", description = "Evento criado.")
 	})
-	public ResponseEntity<EventoDto> cadastrarEvento(@Valid @RequestBody EventoDto eventoDto) {
+	public ResponseEntity<EventoDto> cadastrarEvento(@Valid @RequestBody EventoCadastroDto eventoDto) {
 		return ResponseEntity.ok(service.salvarEvento(eventoDto));
 	}
 	
@@ -52,7 +55,7 @@ public class EventoController {
 		@ApiResponse(responseCode = "404", description = "Nao foi encontrado o evento pelo id informado. Verifique!"),
 		@ApiResponse(responseCode = "200", description = "Evento alterado.")
 	})
-	public ResponseEntity<EventoDto> alterarEvento(@PathVariable Long id, @Valid @RequestBody EventoDto eventoDto) {
+	public ResponseEntity<EventoDto> alterarEvento(@PathVariable Long id, @Valid @RequestBody EventoCadastroDto eventoDto) {
 		Optional<EventoDto> eventoAlterado = service.alterarEvento(id, eventoDto);
 		
 		if (!eventoAlterado.isPresent()) {
@@ -62,9 +65,10 @@ public class EventoController {
 		return ResponseEntity.ok(eventoAlterado.get());
 	}
 	
-	@DeleteMapping("{/id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deletarEvento(@PathVariable Long id) {
-		if (!service.deletarEvento(id)) {
+		String emailAdmin = SecurityContextHolder.getContext().getAuthentication().getName();
+		if (!service.deletarEvento(id, emailAdmin)) {
 			return ResponseEntity.notFound().build();
 		}
 		

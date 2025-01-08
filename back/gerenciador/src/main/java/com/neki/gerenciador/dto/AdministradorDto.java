@@ -6,8 +6,7 @@ public record AdministradorDto(
 		Long id,
 		String nome,
 		String email,
-		String senha,
-		String confirmaSenha
+		String senha
 		) {
 	
 	public Administrador toEntity() {
@@ -24,7 +23,6 @@ public record AdministradorDto(
 				administrador.getId(),
 				administrador.getNome(),
 				administrador.getEmail(),
-				administrador.getSenha(),
 				administrador.getSenha()
 				);
 	}

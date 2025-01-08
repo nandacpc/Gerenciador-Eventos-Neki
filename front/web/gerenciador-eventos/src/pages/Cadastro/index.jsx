@@ -1,29 +1,36 @@
+import styles from "./cadastro.module.css";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
+import { useState } from "react";
+import { Label } from "../../components/Label/Label";
+import { Input } from "../../components/Input/Input";
 
 export function CadastroPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+  const navigate = useNavigate();
 
   const salvarUsuario = async () => {
     e.preventDefault();
-
-    const usuario = {
-      email: email,
-      nome: nome,
-      senha: senha,
-    };
 
     if (senha !== confirmarSenha) {
       alert("As senhas não coincidem.");
       return;
     }
+
+    const usuario = {
+      nome,
+      email,
+      senha,
+    };
+
     try {
-      const response = await api.post("/administrador", usuario);
+      await api.post("/administrador", usuario);
       console.log("Usuário cadastrado com sucesso.", response.data);
       alert("Usuário cadastrado com sucesso!");
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.log("Erro ao cadastrar usuário.", error);
       alert("Erro ao cadastrar usuário. Tente novamente.");

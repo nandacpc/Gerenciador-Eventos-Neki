@@ -27,13 +27,13 @@ public class Evento {
 	private String nome;
 	
 	@NotBlank(message="O local do evento deve ser informado.")
-	@Column(name="local")
-	private String local;
+	@Column(name="localizacao")
+	private String localizacao;
 	
 	@NotNull(message = "A data do evento deve ser informada.")
 	@Future(message = "A data do evento deve ser posterior a data atual.")
-	@Column(name="data")
-	private LocalDate data;
+	@Column(name="data_evento")
+	private LocalDate data_evento;
 	
 	@Column(name="imagem")
 	private String imagem;
@@ -60,20 +60,20 @@ public class Evento {
 		this.nome = nome;
 	}
 
-	public String getLocal() {
-		return local;
+	public String getLocalizacao() {
+		return localizacao;
 	}
 
-	public void setLocal(String local) {
-		this.local = local;
+	public void setLocalizacao(String localizacao) {
+		this.localizacao = localizacao;
 	}
 
-	public LocalDate getData() {
-		return data;
+	public LocalDate getDataEvento() {
+		return data_evento;
 	}
 
-	public void setData(LocalDate data) {
-		this.data = data;
+	public void setDataEvento(LocalDate data_evento) {
+		this.data_evento = data_evento;
 	}
 
 	public String getImagem() {

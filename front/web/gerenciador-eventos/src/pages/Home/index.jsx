@@ -1,20 +1,22 @@
-import { useEffect } from "react";
+import styles from "./home.module.css";
+import { useEffect, useState } from "react";
 import { Label } from "../../components/Label/Label";
 import { Input } from "../../components/Input/Input";
+import { api } from "../../services/api";
 
 export function HomePage() {
   const [eventos, setEventos] = useState([]);
   const [modal, setModal] = useState(false);
   const [novoEvento, setNovoEvento] = useState({
     nome: "",
-    data: "",
-    local: "",
-    imagem: null,
+    data_evento: "",
+    localizacao: "",
+    imagem: "",
   });
 
   useEffect(() => {
     api
-      .get("/eventos")
+      .get("/evento")
       .then((response) => {
         setEventos(response.data);
       })
@@ -26,13 +28,13 @@ export function HomePage() {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/eventos", novoEvento);
+      const response = await api.post("/evento", novoEvento);
       setEventos([...eventos, response.data]);
       setNovoEvento({
         nome: "",
-        data: "",
-        local: "",
-        imagem: null,
+        data_evento: "",
+        localizacao: "",
+        imagem: "",
       });
       setModal(false);
     } catch (error) {
@@ -46,10 +48,10 @@ export function HomePage() {
       <ul>
         {eventos.map((evento) => (
           <li key={evento.id}>
-            <img src={evento.imagem} alt={evento.nome} />
+            <img src={evento.imagem} alt="imagem" />
             <p>{evento.nome}</p>
-            <p>{evento.data}</p>
-            <p>{evento.local}</p>
+            <p>{evento.data_evento}</p>
+            <p>{evento.localizacao}</p>
           </li>
         ))}
       </ul>
@@ -73,16 +75,19 @@ export function HomePage() {
               tagInput="data"
               type="date"
               placeholder="Data"
-              value={novoEvento.data}
+              value={novoEvento.data_evento}
+              onChange={(e) =>
+                setNovoEvento({ ...novoEvento, data_evento: e.target.value })
+              }
             />
             <Label label="Local" tagInput="local" />
             <Input
               tagInput="local"
               type="text"
               placeholder="Local"
-              value={novoEvento.local}
+              value={novoEvento.localizacao}
               onChange={(e) =>
-                setNovoEvento({ ...novoEvento, local: e.target.value })
+                setNovoEvento({ ...novoEvento, localizacao: e.target.value })
               }
             />
             <Label label="Imagem" tagInput="imagem" />
