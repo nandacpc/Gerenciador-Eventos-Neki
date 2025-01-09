@@ -1,12 +1,18 @@
 package com.neki.gerenciador.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.neki.gerenciador.dto.EventoCadastroDto;
 import com.neki.gerenciador.dto.EventoDto;
@@ -45,11 +51,28 @@ public class EventoService {
 		novoEvento.setNome(eventoDto.nome());
 		novoEvento.setDataEvento(eventoDto.data_evento());
 		novoEvento.setLocalizacao(eventoDto.localizacao());
-		novoEvento.setImagem(eventoDto.imagem());
 		novoEvento.setAdmin(admin);
+		try {
+	        String caminhoImagem = salvarImagem(eventoDto.imagem());
+	        novoEvento.setImagem(caminhoImagem);
+	    } catch (IOException e) {
+	        throw new RuntimeException("Erro ao salvar a imagem", e);
+	    }
 		
 		Evento eventoSalvo = repositorio.save(novoEvento);
 		return EventoDto.toDto(eventoSalvo);
+	}
+	
+	public String salvarImagem(MultipartFile imagem) throws IOException {
+	    String diretorio = "src/main/resources/images/";
+	    String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
+	    Path caminho = Paths.get(diretorio + nomeArquivo);
+
+	    Files.createDirectories(caminho.getParent());
+
+	    Files.write(caminho, imagem.getBytes());
+
+	    return nomeArquivo;
 	}
 	
 	public Optional<EventoDto> alterarEvento(Long id, EventoCadastroDto eventoDto){
@@ -61,7 +84,6 @@ public class EventoService {
 		evento.setNome(eventoDto.nome());
 		evento.setDataEvento(eventoDto.data_evento());
 		evento.setLocalizacao(eventoDto.localizacao());
-		evento.setImagem(eventoDto.imagem());
 		
 		Evento eventoAlterado = repositorio.save(evento);
 		return Optional.of(EventoDto.toDto(eventoAlterado));

@@ -27,14 +27,27 @@ export function HomePage() {
 
   const handleAddEvent = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await api.post("/evento", novoEvento);
+      const formData = new FormData();
+      formData.append("nome", novoEvento.nome);
+      formData.append("data_evento", novoEvento.data_evento);
+      formData.append("localizacao", novoEvento.localizacao);
+      formData.append("imagem", novoEvento.imagem);
+
+      const response = await api.post("/evento", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       setEventos([...eventos, response.data]);
+
       setNovoEvento({
         nome: "",
         data_evento: "",
         localizacao: "",
-        imagem: "",
+        imagem: null,
       });
       setModal(false);
     } catch (error) {
@@ -42,15 +55,25 @@ export function HomePage() {
     }
   };
 
+  function formatarData(dataISO) {
+    const [ano, mes, dia] = dataISO.split("-");
+    return `${dia}-${mes}-${ano}`;
+  }
+
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Eventos</h1>
-      <ul>
+      <ul className={styles.list}>
         {eventos.map((evento) => (
-          <li key={evento.id}>
-            <img src={evento.imagem} alt="imagem" />
+          <li key={evento.id} className={styles.item}>
+            <div className={styles.imagem}>
+              <img
+                src={`http://localhost:8080/images/${evento.imagem}`}
+                alt="imagem do evento"
+              />
+            </div>
             <p>{evento.nome}</p>
-            <p>{evento.data_evento}</p>
+            <p>{formatarData(evento.data_evento)}</p>
             <p>{evento.localizacao}</p>
           </li>
         ))}
@@ -59,7 +82,7 @@ export function HomePage() {
       {modal && (
         <div>
           <h2>Novo evento</h2>
-          <form onSubmit={handleAddEvent}>
+          <form onSubmit={handleAddEvent} className={styles.form}>
             <Label label="Nome" tagInput="nome" />
             <Input
               tagInput="nome"
@@ -91,13 +114,10 @@ export function HomePage() {
               }
             />
             <Label label="Imagem" tagInput="imagem" />
-            <Input
-              tagInput="imagem"
+            <input
               type="file"
-              placeholder="Imagem"
-              value={novoEvento.imagem}
               onChange={(e) =>
-                setNovoEvento({ ...novoEvento, imagem: e.target.value })
+                setNovoEvento({ ...novoEvento, imagem: e.target.files[0] })
               }
             />
             <button type="submit">Salvar</button>

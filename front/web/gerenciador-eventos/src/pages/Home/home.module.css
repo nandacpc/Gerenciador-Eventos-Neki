@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.list {
+  display: flex;
+  list-style: none;
+  color: black;
+  gap: 10px;
+}
+.item {
+  border-radius: 10px;
+  background-color: beige;
+}
+.imagem img {
+  border-radius: 10px;
+}

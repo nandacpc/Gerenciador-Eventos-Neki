@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,10 +46,18 @@ public class EventoController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "400", description = "Erro ao criar um novo evento."),
 		@ApiResponse(responseCode = "201", description = "Evento criado.")
-	})
-	public ResponseEntity<EventoDto> cadastrarEvento(@Valid @RequestBody EventoCadastroDto eventoDto) {
-		return ResponseEntity.ok(service.salvarEvento(eventoDto));
+	})	
+	public ResponseEntity<EventoDto> cadastrarEvento(@ModelAttribute EventoCadastroDto eventoDto) {
+		try {
+	        return ResponseEntity.ok(service.salvarEvento(eventoDto));
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+	    }
 	}
+//	public ResponseEntity<EventoDto> cadastrarEvento(@Valid @RequestBody EventoCadastroDto eventoDto) {
+//		return ResponseEntity.ok(service.salvarEvento(eventoDto));
+//	}
+	
 	
 	@PutMapping("/{id}")
 	@Operation(summary = "Alterar um evento.", description = "Altera um evento e retorna os detalhes do evento alterado.")

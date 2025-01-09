@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.neki.gerenciador.config.JwtUtil;
 import com.neki.gerenciador.dto.AdministradorCadastroDto;
 import com.neki.gerenciador.dto.AdministradorDto;
 import com.neki.gerenciador.service.AdministradorService;
@@ -24,9 +23,6 @@ import jakarta.validation.Valid;
 public class AdministradorController {
 	@Autowired
 	private AdministradorService service;
-	
-    @Autowired
-    private JwtUtil jwtUtil;
 	
 	@Operation(summary="Cadastrar um novo usuário", description="Cria um novo usuário e retorna os detalhes do usuário criado")
 	@PostMapping

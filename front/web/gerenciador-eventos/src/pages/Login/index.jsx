@@ -1,5 +1,5 @@
 import styles from "./login.module.css";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/auth";
 import { Label } from "../../components/Label/Label";
 import { Input } from "../../components/Input/Input";
@@ -9,6 +9,7 @@ export function LoginPage() {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
@@ -20,6 +21,14 @@ export function LoginPage() {
     await signIn(data);
     navigate("/home");
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/home");
+    }
+  }, [navigate]);
   return (
     <>
       <div className={styles.container}>
