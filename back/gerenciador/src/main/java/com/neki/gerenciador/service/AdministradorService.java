@@ -23,6 +23,9 @@ public class AdministradorService {
     private JwtUtil jwtUtil;
 	
 	public AdministradorDto salvarAdmin(AdministradorCadastroDto adminDto) {
+		System.out.println("Senha: " + adminDto.senha());
+	    System.out.println("ConfirmaSenha: " + adminDto.confirmaSenha());
+		
 		if (!adminDto.senha().equals(adminDto.confirmaSenha())) {
 			throw new RuntimeException("Senhas não conferem");
 		}
