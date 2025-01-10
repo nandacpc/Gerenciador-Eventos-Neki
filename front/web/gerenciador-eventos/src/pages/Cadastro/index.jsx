@@ -9,13 +9,13 @@ export function CadastroPage() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [confirmaSenha, setConfirmarSenha] = useState("");
   const navigate = useNavigate();
 
-  const salvarUsuario = async () => {
+  const salvarUsuario = async (e) => {
     e.preventDefault();
 
-    if (senha !== confirmarSenha) {
+    if (senha !== confirmaSenha) {
       alert("As senhas não coincidem.");
       return;
     }
@@ -24,10 +24,11 @@ export function CadastroPage() {
       nome,
       email,
       senha,
+      confirmaSenha,
     };
 
     try {
-      await api.post("/administrador", usuario);
+      const response = await api.post("/administrador", usuario);
       console.log("Usuário cadastrado com sucesso.", response.data);
       alert("Usuário cadastrado com sucesso!");
       navigate("/");
@@ -71,7 +72,7 @@ export function CadastroPage() {
             tagInput="confirmarSenha"
             type="password"
             placeholder="Confirme sua senha"
-            value={confirmarSenha}
+            value={confirmaSenha}
             onChange={(e) => setConfirmarSenha(e.target.value)}
           />
           <button type="submit">Cadastrar</button>

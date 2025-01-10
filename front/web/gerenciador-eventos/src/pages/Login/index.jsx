@@ -9,7 +9,7 @@ export function LoginPage() {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { user } = useContext(AuthContext);
+  const [lembrarMe, setLembrarMe] = useState(false);
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
@@ -18,7 +18,7 @@ export function LoginPage() {
       email,
       senha,
     };
-    await signIn(data);
+    await signIn(data, lembrarMe);
     navigate("/home");
   };
 
@@ -34,7 +34,6 @@ export function LoginPage() {
       <div className={styles.container}>
         <h1>Login</h1>
         <form onSubmit={handleSignIn} className={styles.form}>
-          <Label label="Login" tagInput="login" />
           <Input
             tagInput="login"
             type="email"
@@ -42,7 +41,6 @@ export function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Label label="Senha" tagInput="senha" />
           <Input
             tagInput="senha"
             type="password"
@@ -56,7 +54,8 @@ export function LoginPage() {
             type="checkbox"
             placeholder=""
             value=""
-            onChange={(e) => setLembrar(e.target.checked)}
+            checked={lembrarMe}
+            onChange={(e) => setLembrarMe(e.target.checked)}
           />
           <button type="submit">Entrar</button>
           <button type="button" onClick={() => navigate("/cadastro")}>
