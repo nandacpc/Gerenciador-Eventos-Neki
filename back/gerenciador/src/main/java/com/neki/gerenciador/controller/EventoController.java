@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.neki.gerenciador.dto.EventoCadastroDto;
 import com.neki.gerenciador.dto.EventoDto;
+import com.neki.gerenciador.dto.EventoEditarDto;
 import com.neki.gerenciador.service.EventoService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,7 +62,7 @@ public class EventoController {
 		@ApiResponse(responseCode = "404", description = "Nao foi encontrado o evento pelo id informado. Verifique!"),
 		@ApiResponse(responseCode = "200", description = "Evento alterado.")
 	})
-	public ResponseEntity<EventoDto> alterarEvento(@PathVariable Long id, @Valid @RequestBody EventoCadastroDto eventoDto) {
+	public ResponseEntity<EventoDto> alterarEvento(@PathVariable Long id, @Valid @RequestBody EventoEditarDto eventoDto) {
 		Optional<EventoDto> eventoAlterado = service.alterarEvento(id, eventoDto);
 		
 		if (!eventoAlterado.isPresent()) {
@@ -72,6 +73,11 @@ public class EventoController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Deletar um evento.", description = "Apaga um evento de acordo com o id fornecido.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "404", description = "Nao foi encontrado o evento pelo id informado. Verifique!"),
+		@ApiResponse(responseCode = "200", description = "Evento deletado.")
+	})
 	public ResponseEntity<Void> deletarEvento(@PathVariable Long id) {
 		String emailAdmin = SecurityContextHolder.getContext().getAuthentication().getName();
 		if (!service.deletarEvento(id, emailAdmin)) {

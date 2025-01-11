@@ -26,7 +26,7 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000","exp://192.168.0.204:8081"));
         corsConfiguration.setExposedHeaders(Arrays.asList("Content-Type", "Authorization"));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -45,6 +45,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/administrador/login").permitAll()
             .requestMatchers(HttpMethod.POST, "/administrador").permitAll()
             .requestMatchers("/evento/**").authenticated()
+//            .requestMatchers("/evento/**").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

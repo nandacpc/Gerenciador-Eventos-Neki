@@ -29,7 +29,7 @@ public class Administrador {
 	@Column(name="senha")
 	private String senha;
 	
-	@OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "admin", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	private List<Evento> eventos;
 	
 

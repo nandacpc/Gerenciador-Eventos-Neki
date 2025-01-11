@@ -16,10 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.neki.gerenciador.dto.EventoCadastroDto;
 import com.neki.gerenciador.dto.EventoDto;
+import com.neki.gerenciador.dto.EventoEditarDto;
 import com.neki.gerenciador.model.Administrador;
 import com.neki.gerenciador.model.Evento;
 import com.neki.gerenciador.repository.AdministradorRepository;
 import com.neki.gerenciador.repository.EventoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class EventoService {
@@ -75,12 +78,15 @@ public class EventoService {
 	    return nomeArquivo;
 	}
 	
-	public Optional<EventoDto> alterarEvento(Long id, EventoCadastroDto eventoDto){
+	public Optional<EventoDto> alterarEvento(Long id, EventoEditarDto eventoDto){
 		if(!repositorio.existsById(id)) {
 			return Optional.empty();
 		}
 		
 		Evento evento = repositorio.findById(id).get();
+		evento.setImagem(evento.getImagem());
+		evento.setNome(evento.getNome());
+		evento.setAdmin(evento.getAdmin());
 		evento.setDataEvento(eventoDto.data_evento());
 		evento.setLocalizacao(eventoDto.localizacao());
 		
@@ -88,6 +94,7 @@ public class EventoService {
 		return Optional.of(EventoDto.toDto(eventoAlterado));
 	}
 	
+	@Transactional
 	public boolean deletarEvento(Long eventoId, String emailAdmin) {
 	    Administrador admin = adminRepositorio.findByEmail(emailAdmin)
 	            .orElseThrow(() -> new RuntimeException("Administrador não encontrado"));
@@ -99,7 +106,7 @@ public class EventoService {
 	        throw new RuntimeException("Acesso negado");
 	    }
 
-	    repositorio.delete(evento);
+	    repositorio.deleteById(eventoId);
 	    return true;
 	}
 }

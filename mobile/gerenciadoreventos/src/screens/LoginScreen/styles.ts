@@ -8,9 +8,10 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
     marginBottom: 16,
+    color: "#19536e",
     textAlign: "center",
   },
   input: {
@@ -19,11 +20,22 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#eeccd7",
+  botoes: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    gap: 32,
   },
-  button: {},
-  buttonText: {},
-  errorText: {},
+  botao: {
+    backgroundColor: "#19536e",
+    padding: 16,
+    borderRadius: 8,
+    width: "70%",
+    alignItems: "center",
+  },
+  botaoText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });

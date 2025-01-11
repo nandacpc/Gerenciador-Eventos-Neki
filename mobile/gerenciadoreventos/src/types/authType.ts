@@ -1,7 +1,7 @@
 export type AuthContextProps = {
-  user: string | null;
+  token: string | null;
   signIn: (email: string, senha: string) => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
 };
 
 export type AuthProviderProps = {
