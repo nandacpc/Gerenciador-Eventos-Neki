@@ -48,15 +48,17 @@ export function LoginPage() {
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
           />
-          <Label label="Lembre-se de mim" tagInput="lembrar-me" />
-          <Input
-            tagInput="lembrar-me"
-            type="checkbox"
-            placeholder=""
-            value=""
-            checked={lembrarMe}
-            onChange={(e) => setLembrarMe(e.target.checked)}
-          />
+          <div>
+            <Input
+              tagInput="lembrar-me"
+              type="checkbox"
+              placeholder=""
+              value=""
+              checked={lembrarMe}
+              onChange={(e) => setLembrarMe(e.target.checked)}
+            />
+            <Label label="Lembre-se de mim" tagInput="lembrar-me" />
+          </div>
           <button type="submit">Entrar</button>
           <button type="button" onClick={() => navigate("/cadastro")}>
             Cadastrar

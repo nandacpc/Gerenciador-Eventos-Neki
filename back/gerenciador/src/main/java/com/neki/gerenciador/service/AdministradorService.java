@@ -23,9 +23,6 @@ public class AdministradorService {
     private JwtUtil jwtUtil;
 	
 	public AdministradorDto salvarAdmin(AdministradorCadastroDto adminDto) {
-		System.out.println("Senha: " + adminDto.senha());
-	    System.out.println("ConfirmaSenha: " + adminDto.confirmaSenha());
-		
 		if (!adminDto.senha().equals(adminDto.confirmaSenha())) {
 			throw new RuntimeException("Senhas não conferem");
 		}
@@ -45,7 +42,7 @@ public class AdministradorService {
 	
 	private void validarCadastro(AdministradorCadastroDto adminDto) {
 		if (repositorio.existsByEmail(adminDto.email())) {
-			throw new RuntimeException("Email ja cadastrado");
+			throw new RuntimeException("Email já cadastrado");
 		}
 	}
 	

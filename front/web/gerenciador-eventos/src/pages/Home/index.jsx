@@ -5,12 +5,18 @@ import { api } from "../../services/api";
 
 export function HomePage() {
   const [eventos, setEventos] = useState([]);
-  const [modal, setModal] = useState(false);
+  const [modalAdicionar, setModalAdicionar] = useState(false);
+  const [modalEditar, setModalEditar] = useState(false);
+  const [eventoAtual, setEventoAtual] = useState(null);
   const [novoEvento, setNovoEvento] = useState({
     nome: "",
     data_evento: "",
     localizacao: "",
     imagem: "",
+  });
+  const [edicaoEvento, setEdicaoEvento] = useState({
+    data_evento: "",
+    localizacao: "",
   });
 
   useEffect(() => {
@@ -53,9 +59,47 @@ export function HomePage() {
         localizacao: "",
         imagem: null,
       });
-      setModal(false);
+      setModalAdicionar(false);
     } catch (error) {
       console.log("Erro ao adicionar evento.", error);
+    }
+  };
+
+  const abrirModalEditar = (evento) => {
+    setEventoAtual(evento);
+    setEdicaoEvento({
+      data_evento: evento.data_evento,
+      localizacao: evento.localizacao,
+    });
+    setModalEditar(true);
+  };
+
+  const handleEditEvento = async (e) => {
+    e.preventDefault();
+
+    try {
+      const updateEvento = { ...edicaoEvento };
+
+      await api.put(`/evento/${eventoAtual.id}`, updateEvento);
+
+      setEventos((prev) =>
+        prev.map((evento) =>
+          evento.id === eventoAtual.id ? { ...evento, ...updateEvento } : evento
+        )
+      );
+
+      setModalEditar(false);
+    } catch (error) {
+      console.log("Erro ao editar evento.", error);
+    }
+  };
+
+  const handleDeleteEvento = async (id) => {
+    try {
+      await api.delete(`/evento/${id}`);
+      setEventos(eventos.filter((evento) => evento.id !== id));
+    } catch (error) {
+      console.log("Erro ao deletar evento.", error);
     }
   };
 
@@ -70,32 +114,48 @@ export function HomePage() {
         <h1>Eventos</h1>
         <button
           className={styles.button_adicionar}
-          onClick={() => setModal(true)}
+          onClick={() => setModalAdicionar(true)}
         >
           ADICIONAR EVENTO
         </button>
-        <ul className={styles.list}>
+        <div className={styles.list}>
           {eventos.map((evento) => (
-            <li key={evento.id} className={styles.item}>
-              <div className={styles.imagem}>
-                <img
-                  src={`http://localhost:8080/images/${evento.imagem}`}
-                  alt="imagem do evento"
-                />
+            <div key={evento.id} className={styles.item}>
+              <div className={styles.conteudo}>
+                <div className={styles.imagem}>
+                  <img
+                    src={`http://localhost:8080/images/${evento.imagem}`}
+                    alt="imagem do evento"
+                  />
+                </div>
+                <div className={styles.data}>
+                  <p>{formatarData(evento.data_evento)}</p>
+                </div>
+                <p className={styles.titulo}>{evento.nome}</p>
+                <div className={styles.endereco_div}>
+                  <p className={styles.endereco}>Endereço:</p>
+                  <p>{evento.localizacao}</p>
+                </div>
               </div>
-              <div className={styles.data}>
-                <p>{formatarData(evento.data_evento)}</p>
+              <div className={styles.buttons}>
+                <button
+                  className={styles.button_excluir}
+                  onClick={() => handleDeleteEvento(evento.id)}
+                >
+                  Excluir
+                </button>
+                <button
+                  className={styles.button_editar}
+                  onClick={() => abrirModalEditar(evento)}
+                >
+                  Editar
+                </button>
               </div>
-              <p className={styles.titulo}>{evento.nome}</p>
-              <div className={styles.endereco_div}>
-                <p className={styles.endereco}>Endereço:</p>
-                <p>{evento.localizacao}</p>
-              </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
 
-        {modal && (
+        {modalAdicionar && (
           <div className={styles.modal_overlay}>
             <div className={styles.modal}>
               <button
@@ -147,6 +207,52 @@ export function HomePage() {
                 />
                 <div className={styles.botoes}>
                   <button onClick={() => setModal(false)}>Cancelar</button>
+                  <button type="submit">Salvar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {modalEditar && (
+          <div className={styles.modal_overlay}>
+            <div className={styles.modal}>
+              <button
+                className={styles.closeButton}
+                onClick={() => setModalEditar(false)}
+              >
+                &times;
+              </button>
+              <h2>Editar evento</h2>
+              <form onSubmit={handleEditEvento} className={styles.form}>
+                <Input
+                  tagInput="data"
+                  type="date"
+                  placeholder="Data"
+                  value={edicaoEvento.data_evento}
+                  onChange={(e) =>
+                    setEdicaoEvento({
+                      ...edicaoEvento,
+                      data_evento: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  tagInput="local"
+                  type="text"
+                  placeholder="Local"
+                  value={edicaoEvento.localizacao}
+                  onChange={(e) =>
+                    setEdicaoEvento({
+                      ...edicaoEvento,
+                      localizacao: e.target.value,
+                    })
+                  }
+                />
+                <div className={styles.botoes}>
+                  <button onClick={() => setModalEditar(false)}>
+                    Cancelar
+                  </button>
                   <button type="submit">Salvar</button>
                 </div>
               </form>

@@ -54,10 +54,6 @@ public class EventoController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 	    }
 	}
-//	public ResponseEntity<EventoDto> cadastrarEvento(@Valid @RequestBody EventoCadastroDto eventoDto) {
-//		return ResponseEntity.ok(service.salvarEvento(eventoDto));
-//	}
-	
 	
 	@PutMapping("/{id}")
 	@Operation(summary = "Alterar um evento.", description = "Altera um evento e retorna os detalhes do evento alterado.")

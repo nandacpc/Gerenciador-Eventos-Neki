@@ -81,7 +81,6 @@ public class EventoService {
 		}
 		
 		Evento evento = repositorio.findById(id).get();
-		evento.setNome(eventoDto.nome());
 		evento.setDataEvento(eventoDto.data_evento());
 		evento.setLocalizacao(eventoDto.localizacao());
 		

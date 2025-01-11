@@ -21,6 +21,8 @@ export const AuthProvider = ({ children }) => {
         if (decodedToken.exp < currentTime) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
+          sessionStorage.removeItem("user");
+          sessionStorage.removeItem("token");
         } else {
           setUser(JSON.parse(storageUser));
         }
@@ -28,6 +30,8 @@ export const AuthProvider = ({ children }) => {
         console.error("Erro ao decodificar o token:", error);
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
       }
     }
   }, []);
@@ -68,6 +72,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
   };
 
   return (
