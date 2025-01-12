@@ -13,10 +13,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const loadTokenData = async () => {
       const storedToken = await AsyncStorage.getItem("token");
-      if (storedToken) setToken(storedToken);
+      if (storedToken) {
+        try {
+          const decodedToken = JSON.parse(storedToken);
+          const currentTime = Date.now() / 1000;
+          if (decodedToken.exp < currentTime) {
+            await AsyncStorage.removeItem("token");
+            setToken(null);
+            return;
+          } else {
+            setToken(storedToken);
+          }
+        } catch (error) {
+          console.error("Erro ao decodificar o token:", error);
+          await AsyncStorage.removeItem("token");
+          setToken(null);
+          return;
+        }
+      }
     };
     loadTokenData();
   }, []);
+
+  useEffect(() => {
+    const verificarToken = async () => {
+      const token = await AsyncStorage.getItem("token");
+      console.log("Token atual:", token);
+    };
+    verificarToken();
+  }, [token]);
 
   const signIn = async (email: string, senha: string) => {
     try {

@@ -12,12 +12,13 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 import { getEventos, updateEvento } from "../../services/eventosService";
-import { evento } from "../../types/screensType";
+import { evento, StackParamList } from "../../types/screensType";
 import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../../contexts/AuthContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 export function HomeScreen() {
   const [eventos, setEventos] = useState<evento[]>([]);
@@ -27,6 +28,8 @@ export function HomeScreen() {
   const [novoEvento, setNovoEvento] = useState<Partial<evento>>({});
   const [imagemEvento, setImagemEvento] = useState<string | null>(null);
   const [mostrarDatePicker, setMostrarDatePicker] = useState(false);
+  const navigation = useNavigation<NavigationProp<StackParamList>>();
+
   const { signOut } = useAuth();
 
   const buscarEventos = async () => {
@@ -44,6 +47,22 @@ export function HomeScreen() {
   };
 
   const adicionarEvento = async () => {
+    if (!novoEvento.data_evento) {
+      Alert.alert("Erro", "Por favor, selecione uma data.");
+      return;
+    }
+
+    const dataEscolhida = new Date(novoEvento.data_evento);
+    const dataAtual = new Date();
+    dataAtual.setHours(0, 0, 0, 0);
+
+    if (dataEscolhida < dataAtual) {
+      Alert.alert(
+        "Data inválida",
+        "A data do evento deve ser posterior a hoje."
+      );
+      return;
+    }
     const formData = new FormData();
     if (imagemEvento) {
       const arquivo = {
@@ -98,6 +117,17 @@ export function HomeScreen() {
         data_evento: eventoAtual.data_evento,
         localizacao: eventoAtual.localizacao,
       };
+      const dataEscolhida = new Date(eventoAtual.data_evento);
+      const dataAtual = new Date();
+      dataAtual.setHours(0, 0, 0, 0);
+
+      if (dataEscolhida < dataAtual) {
+        Alert.alert(
+          "Data inválida",
+          "A data do evento deve ser posterior a hoje."
+        );
+        return;
+      }
       await updateEvento(eventoAtualizado);
       setModalEditar(false);
       buscarEventos();
@@ -142,9 +172,27 @@ export function HomeScreen() {
   const aoSelecionarData = (event: any, selectedDate?: Date) => {
     setMostrarDatePicker(false);
     if (selectedDate) {
-      const dataISO = selectedDate.toISOString().split("T")[0];
+      const dataCorrigida = new Date(
+        selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+      );
+      const dataISO = dataCorrigida.toISOString().split("T")[0];
       setEventoAtual((prev) => ({ ...prev, data_evento: dataISO } as evento));
     }
+  };
+
+  const processarDataSelecionada = (selectedDate?: Date) => {
+    if (!selectedDate) return null;
+
+    const dataCorrigida = new Date(
+      selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+    );
+
+    return dataCorrigida.toISOString().split("T")[0];
+  };
+
+  const deslogar = async () => {
+    signOut();
+    navigation.navigate("Login");
   };
 
   useEffect(() => {
@@ -155,7 +203,7 @@ export function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Gerenciador de Eventos</Text>
-        <Pressable onPress={signOut}>
+        <Pressable onPress={deslogar}>
           <Text style={styles.botaoSair}>Logout</Text>
         </Pressable>
       </View>
@@ -204,7 +252,7 @@ export function HomeScreen() {
           onRequestClose={() => setModalAdicionar(false)}
         >
           <View style={styles.modalOverlay}>
-            <View style={[styles.modal, { backgroundColor: "#fff" }]}>
+            <View style={styles.modal}>
               <Text style={styles.modalTitle}>Adicionar Evento</Text>
               <TextInput
                 placeholder="Nome do Evento"
@@ -231,11 +279,15 @@ export function HomeScreen() {
                   mode="date"
                   display="default"
                   onChange={(event, selectedDate) => {
-                    aoSelecionarData(event, selectedDate);
-                    setNovoEvento((prev) => ({
-                      ...prev,
-                      data_evento: selectedDate?.toISOString().split("T")[0],
-                    }));
+                    setMostrarDatePicker(false);
+
+                    const dataISO = processarDataSelecionada(selectedDate);
+                    if (dataISO) {
+                      setNovoEvento((prev) => ({
+                        ...prev,
+                        data_evento: dataISO,
+                      }));
+                    }
                   }}
                 />
               )}
@@ -246,21 +298,19 @@ export function HomeScreen() {
                   setNovoEvento((prev) => ({ ...prev, localizacao: text }))
                 }
               />
-              <Pressable onPress={selecionarImagem}>
-                <Text style={styles.botaoImagem}>Selecionar Imagem</Text>
+              <Pressable style={styles.botaoImagem} onPress={selecionarImagem}>
+                <Text style={styles.botaoText}>Selecionar Imagem</Text>
               </Pressable>
-              {imagemEvento && (
-                <Image
-                  source={{ uri: imagemEvento }}
-                  style={styles.previewImagem}
-                />
-              )}
+              {imagemEvento && <Image source={{ uri: imagemEvento }} />}
               <View style={styles.botoes}>
-                <Pressable onPress={() => setModalAdicionar(false)}>
-                  <Text style={styles.botaoCancelar}>Cancelar</Text>
+                <Pressable
+                  onPress={() => setModalAdicionar(false)}
+                  style={styles.botaoCancelar}
+                >
+                  <Text>Cancelar</Text>
                 </Pressable>
-                <Pressable onPress={adicionarEvento}>
-                  <Text style={styles.botaoSalvar}>Salvar</Text>
+                <Pressable style={styles.botaoSalvar} onPress={adicionarEvento}>
+                  <Text>Salvar</Text>
                 </Pressable>
               </View>
             </View>
@@ -270,7 +320,7 @@ export function HomeScreen() {
 
       {modalEditar && eventoAtual && (
         <Modal
-          transparent
+          transparent={true}
           visible={modalEditar}
           onRequestClose={() => setModalEditar(false)}
         >

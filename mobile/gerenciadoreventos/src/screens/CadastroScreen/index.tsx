@@ -26,7 +26,7 @@ export function CadastroScreen() {
       navigation.navigate("Login");
     } catch (error) {
       console.error("Erro ao cadastrar usuário:", error);
-      Alert.alert("Erro", "Erro ao cadastrar usuário. Tente novamente.");
+      Alert.alert("Erro", "Email já cadastrado.");
     }
   };
 

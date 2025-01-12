@@ -34,7 +34,7 @@ export function CadastroPage() {
       navigate("/");
     } catch (error) {
       console.log("Erro ao cadastrar usuário.", error);
-      alert("Erro ao cadastrar usuário. Tente novamente.");
+      alert("Email já cadastrado.");
     }
   };
 

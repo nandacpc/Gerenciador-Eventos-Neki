@@ -4,20 +4,23 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 40,
     minHeight: "100%",
     backgroundColor: "#f8f9fa",
-    marginTop: 20,
     gap: 20,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
     width: "100%",
     padding: 20,
+    paddingTop: 40,
     backgroundColor: "#19536e",
+  },
+  headerTitle: {
+    fontSize: 20,
+    color: "#fff",
+    fontWeight: "bold",
   },
   botaoSair: {
     backgroundColor: "#fff",
@@ -25,11 +28,6 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     fontWeight: "bold",
     color: "#19536e",
-  },
-  headerTitle: {
-    fontSize: 20,
-    color: "#fff",
-    fontWeight: "bold",
   },
   botaoAdicionar: {
     backgroundColor: "#19536e",
@@ -51,6 +49,13 @@ export const styles = StyleSheet.create({
     padding: 16,
     width: "90%",
     gap: 10,
+    marginBottom: 20,
+  },
+  imagem: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    resizeMode: "cover",
   },
   data: {
     borderRadius: 12,
@@ -60,12 +65,6 @@ export const styles = StyleSheet.create({
     padding: 8,
     color: "#fff",
     fontWeight: "bold",
-  },
-  imagem: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    resizeMode: "cover",
   },
 
   titulo: {
@@ -116,7 +115,7 @@ export const styles = StyleSheet.create({
   },
   modal: {
     flexDirection: "column",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#0c2e3d",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#ccc",
@@ -128,8 +127,17 @@ export const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 24,
-    color: "#19536e",
+    color: "#fff",
     marginBottom: 20,
+    fontWeight: "500",
+  },
+  botaoImagem: {
+    backgroundColor: "#19536e",
+    borderRadius: 12,
+    paddingVertical: 12,
+    width: 200,
+    justifyContent: "center",
+    alignItems: "center",
   },
   botaoSalvar: {
     backgroundColor: "#19536e",
@@ -147,41 +155,13 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  form: {
-    flexDirection: "column",
-    gap: 20,
-  },
   input: {
-    backgroundColor: "#eee",
-    color: "#999",
+    backgroundColor: "#797d80",
+    color: "#000",
     fontSize: 14,
     padding: 16,
     borderRadius: 30,
     borderWidth: 1,
     borderColor: "#bbb",
-  },
-  closeButton: {
-    alignSelf: "flex-end",
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    padding: 0,
-  },
-  closeButtonText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#19536e",
-  },
-  botao: {
-    backgroundColor: "#19536e",
-    width: 200,
-    borderRadius: 12,
-    paddingVertical: 12,
-  },
-  botaoImagem: {
-    backgroundColor: "#19536e",
-    width: 200,
-    borderRadius: 12,
-    paddingVertical: 12,
   },
 });

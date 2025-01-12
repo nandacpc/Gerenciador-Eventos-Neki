@@ -20,6 +20,13 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
   },
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+
   botoes: {
     justifyContent: "center",
     alignItems: "center",
