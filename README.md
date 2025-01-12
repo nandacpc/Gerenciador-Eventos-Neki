@@ -7,10 +7,6 @@ Este projeto é um sistema completo para gerenciamento de eventos, desenvolvido 
 - [Descrição](#descrição)
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Instalação](#instalação)
-- [Uso](#uso)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
 
 ## Descrição
 
